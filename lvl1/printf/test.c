@@ -24,49 +24,49 @@ void put_digit(long num){
     if(num >= 10){
         put_digit(num/10);
     }
-    put_char(num%10 + '0');
-    
+    put_char(num%10 +'0');
 }
 
-int len_digit(long num){
+int digit_len(long num){
     int i = 0;
     if(num <= 0){
         i++;
         num = -num;
     }
     while(num){
-        num/=10;
         i++;
+        num/=10;
     }
     return(i);
 }
 
 int print_digit(int num){
     put_digit(num);
-    return(len_digit(num));
+    return(digit_len(num));
 }
 
 void put_hex(unsigned int num){
     char *hex = "0123456789abcdef";
-    if(num >= 16)
+    if(num >= 16){
         put_hex(num/16);
+    }
     put_char(hex[num%16]);
 }
 
-int len_hex(unsigned int num){
+int hex_len(unsigned int num){
     int i = 0;
     if(num == 0)
         return(1);
     while(num){
-        i++;
         num/=16;
+        i++;
     }
     return(i);
 }
 
 int print_hex(unsigned int num){
     put_hex(num);
-    return(len_hex(num));
+    return(hex_len(num));
 }
 
 int check_format(va_list args, char c){
@@ -77,35 +77,27 @@ int check_format(va_list args, char c){
     else if(c == 'd'){
         i+= print_digit(va_arg(args, int));
     }
-    else if(c == 'x'){
+    else if(c == 'x'){ 
         i+= print_hex(va_arg(args, unsigned int));
     }
     return(i);
 }
 
-int ft_printf(const char *str, ...){
+int ft_printf(char *str, ...){
     va_list args;
-    int i = 0;
     va_start(args, str);
+    int i = 0;
     while(*str){
         if(*str == '%'){
             str++;
-            i+= check_format(args, *str);
+            i+=check_format(args, *str);
         }
         else{
-            i++;
             write(1, str, 1);
+            i++;
         }
         str++;
     }
     va_end(args);
     return(i);
-}
-
-int main(void){
-    char *str = "Hello";
-    int i = 44;
-    unsigned int n = 255;
-    ft_printf("world should say - %s time - %d ff=%x\n", str, i, n);
-    return(0);
 }
